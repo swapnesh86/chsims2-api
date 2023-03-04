@@ -31,6 +31,11 @@ app.use('/', require('./routes/root'))
 app.use('/auth', require('./routes/authRoutes'))
 app.use('/skus', require('./routes/skuRoutes'))
 app.use('/users', require('./routes/userRoutes'))
+app.use('/ledger', require('./routes/ledgerRoutes'))
+app.use('/inventory', require('./routes/inventoryRoutes'))
+app.use('/membership', require('./routes/membershipRoutes'))
+app.use('/billnos', require('./routes/billNoRoutes'))
+
 
 // To handle all routes that have not yet been handled
 app.all('*', (req, res) => {
