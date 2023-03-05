@@ -19,3 +19,9 @@ body {
     place-content: center;
     padding: 1rem;
 }
+
+.bill__entry {
+    background-color: whitesmoke;
+    color: #000;
+    flex-grow: 1;
+}

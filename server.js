@@ -11,6 +11,8 @@ const connectDB = require('./config/dbConn')
 const mongoose = require('mongoose')
 const PORT = process.env.PORT || 3500
 
+const bodyParser = require('body-parser')
+
 //console.log(process.env.NODE_ENV)
 
 connectDB()
@@ -35,6 +37,7 @@ app.use('/ledger', require('./routes/ledgerRoutes'))
 app.use('/inventory', require('./routes/inventoryRoutes'))
 app.use('/membership', require('./routes/membershipRoutes'))
 app.use('/billnos', require('./routes/billNoRoutes'))
+app.use('/sendemail', require('./routes/emailRoutes'))
 
 
 // To handle all routes that have not yet been handled

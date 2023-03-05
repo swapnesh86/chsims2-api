@@ -6,9 +6,9 @@ const asyncHandler = require('express-async-handler')
 // @access Private
 const getAllInventory = asyncHandler(async (req, res) => {
     const inventory = await InventoryList.find().lean()
-    if (!inventory?.length) {
+    /* if (!inventory?.length) {
         return res.status(400).json({ message: 'No inventorys found' })
-    }
+    } */
     res.json(inventory)
 })
 
@@ -74,7 +74,7 @@ const updateInventory = asyncHandler(async (req, res) => {
         return res.status(409).json({ message: 'You seem to be changing barcode to a value that already has an entry in the database' })
     } */
 
-    inventory.source -= Number(source)
+    inventory.source += Number(source)
     inventory.cwefstore += Number(cwefstore)
     inventory.andheri += Number(andheri)
     inventory.bandra += Number(bandra)
