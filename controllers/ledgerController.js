@@ -16,14 +16,14 @@ const getAllLedger = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewLedger = asyncHandler(async (req, res) => {
-    const { billno, barcode, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst } = req.body
+    const { billno, barcode, name, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst } = req.body
     //Confirm Data
-    if (!billno || !barcode || !ordertype || !buyer || !seller || !paymenttype || !qty || !hsncode || !gst) {
+    if (!billno || !barcode || !name || !ordertype || !buyer || !seller || !paymenttype || !qty || !hsncode || !gst) {
         return res.status(400).json({ message: 'Billno, barcode, ordertype, buyer, seller, paymenttype, qty, hsncode, gst are all mandatory fields' })
     }
 
     // Create object
-    const ledgerObject = { billno, barcode, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst }
+    const ledgerObject = { billno, barcode, name, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst }
 
     //Create and store new user
     const ledger = await LedgerList.create(ledgerObject)

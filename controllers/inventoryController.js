@@ -16,10 +16,10 @@ const getAllInventory = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewInventory = asyncHandler(async (req, res) => {
-    const { barcode, source, cwefstore, andheri, bandra, powai, exhibition, sales } = req.body
+    const { barcode, name, size, colour, source, cwefstore, andheri, bandra, powai, exhibition, sales } = req.body
 
     // Confirm Data
-    const tempArr = [source, cwefstore, andheri, bandra, powai, exhibition, sales]
+    const tempArr = [source, name, cwefstore, andheri, bandra, powai, exhibition, sales]
     const count = tempArr.filter(Boolean).length
 
     if (count !== 2) {
@@ -34,7 +34,7 @@ const createNewInventory = asyncHandler(async (req, res) => {
     }
 
     // Create object
-    const inventoryObject = { barcode, source, cwefstore, andheri, bandra, powai, exhibition, sales }
+    const inventoryObject = { barcode, name, size, colour, source, cwefstore, andheri, bandra, powai, exhibition, sales }
 
     //Create and store new user
     const inventory = await InventoryList.create(inventoryObject)

@@ -5,6 +5,18 @@ const InventorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    name: {
+        type: String,
+        required: true
+    },
+    colour: {
+        type: String,
+        required: false
+    },
+    size: {
+        type: String,
+        required: false
+    },
     source: {
         type: Number,
         required: false,
