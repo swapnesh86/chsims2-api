@@ -38,6 +38,7 @@ app.use('/inventory', require('./routes/inventoryRoutes'))
 app.use('/membership', require('./routes/membershipRoutes'))
 app.use('/billnos', require('./routes/billNoRoutes'))
 app.use('/sendemail', require('./routes/emailRoutes'))
+app.use('/attendance', require('./routes/attendanceRoutes'))
 
 
 // To handle all routes that have not yet been handled
