@@ -16,10 +16,10 @@ const getAllMembership = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewMembership = asyncHandler(async (req, res) => {
-    const { barcode, phone, duration, billno } = req.body
+    const { barcode, phone, duration, billno, time } = req.body
 
     //Confirm Data
-    if (!barcode || !phone || !duration || !billno) {
+    if (!barcode || !phone || !duration || !billno || !time) {
         return res.status(400).json({ message: 'Membership Number, phone number, duration and billno are mandatory to create new membership entry' })
     }
 
@@ -30,7 +30,7 @@ const createNewMembership = asyncHandler(async (req, res) => {
     }
 
     // Create object
-    const membershipObject = { barcode, phone, duration, billno }
+    const membershipObject = { barcode, phone, duration, billno, time }
 
     //Create and store new user
     const membership = await MembershipList.create(membershipObject)
@@ -47,10 +47,10 @@ const createNewMembership = asyncHandler(async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateMembership = asyncHandler(async (req, res) => {
-    const { id, barcode, phone, duration, billno, prevbillnos, usectr } = req.body
+    const { id, barcode, phone, duration, billno, time } = req.body
 
     // Confirm Data
-    if (!(barcode || phone) || !duration || !billno) {
+    if (!(barcode || phone) || !duration || !billno || !time) {
         return res.status(400).json({ message: 'Specify Membership Number/Phone along withmembership duration and bill number for an update request' })
     }
 
@@ -68,10 +68,10 @@ const updateMembership = asyncHandler(async (req, res) => {
     } */
 
     membership.phone = phone
-    membership.prevbillnos = [...prevbillnos, billno]
+    membership.prevbillnos = [...membership.prevbillnos, membership.billno]
     membership.billno = billno
-    membership.usectr += usectr
-    membership.exhibition += exhibition
+    membership.duration = duration
+    membership.time = time
 
     const updatedmembership = await membership.save()
 

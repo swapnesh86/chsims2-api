@@ -17,16 +17,16 @@ const MembershipSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    time: {
+        type: String,
+        required: true
+    },
     prevbillnos: [{
         type: String,
         required: false,
         default: null
     }]
-},
-    {
-        timestamps: true
-    }
-)
+})
 
 
 module.exports = mongoose.model('MembershipList', MembershipSchema)

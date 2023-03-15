@@ -19,7 +19,7 @@ const createNewInventory = asyncHandler(async (req, res) => {
     const { barcode, name, size, colour, source, cwefstore, andheri, bandra, powai, exhibition, sales } = req.body
 
     // Confirm Data
-    const tempArr = [source, name, cwefstore, andheri, bandra, powai, exhibition, sales]
+    const tempArr = [source, cwefstore, andheri, bandra, powai, exhibition, sales]
     const count = tempArr.filter(Boolean).length
 
     if (count !== 2) {
@@ -27,7 +27,7 @@ const createNewInventory = asyncHandler(async (req, res) => {
     }
 
 
-    // Check for duplicates
+    // Check for duplicates 
     const duplicate = await InventoryList.findOne({ barcode }).collation({ locale: 'en', strength: 2 }).lean().exec()
     if (duplicate) {
         return res.status(409).json({ message: 'Barcode already exists - try updating fields instead' })
