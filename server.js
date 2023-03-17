@@ -31,10 +31,11 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 //To handle the '/' route
 app.use('/', require('./routes/root'))
 app.use('/auth', require('./routes/authRoutes'))
-app.use('/skus', require('./routes/skuRoutes'))
 app.use('/users', require('./routes/userRoutes'))
 app.use('/ledger', require('./routes/ledgerRoutes'))
-app.use('/inventory', require('./routes/inventoryRoutes'))
+
+app.use('/skuinv', require('./routes/skuinvRoutes'))
+
 app.use('/membership', require('./routes/membershipRoutes'))
 app.use('/billnos', require('./routes/billNoRoutes'))
 app.use('/sendemail', require('./routes/emailRoutes'))

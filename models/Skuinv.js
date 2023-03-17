@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 
-const InventorySchema = new mongoose.Schema({
+const SkuinvSchema = new mongoose.Schema({
     barcode: {
         type: String,
         required: true
@@ -9,13 +9,17 @@ const InventorySchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    colour: {
-        type: String,
-        required: false
+    MRP: {
+        type: Number,
+        required: true
     },
-    size: {
-        type: String,
-        required: false
+    MBR: {
+        type: Number,
+        required: true
+    },
+    HSNCode: {
+        type: Number,
+        required: true
     },
     source: {
         type: Number,
@@ -56,4 +60,4 @@ const InventorySchema = new mongoose.Schema({
 )
 
 
-module.exports = mongoose.model('InventoryList', InventorySchema)
+module.exports = mongoose.model('SkuinvList', SkuinvSchema)
