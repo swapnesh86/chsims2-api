@@ -46,7 +46,7 @@ const createNewBillNos = asyncHandler(async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateBillNos = asyncHandler(async (req, res) => {
-    const { id, ad, ba, po, ex, dn, db, os, int, ip, rs } = req.body
+    const { id, ad, ba, po, ex, dn, db, os, int, ip, rs, date } = req.body
 
     const tempArr = [ad, ba, po, ex, dn, db, os, int, ip, rs]
     const count = tempArr.filter(Boolean).length
@@ -59,6 +59,12 @@ const updateBillNos = asyncHandler(async (req, res) => {
 
     if (!billNos) {
         return res.status(400).json({ message: 'Entry not found' })
+    }
+
+    if (date) {
+        billNos.ad = 1; billNos.ba = 1; billNos.po = 1; billNos.ex = 1;
+        billNos.db = 1; billNos.dn = 1; billNos.os = 1; billNos.int = 1;
+        billNos.ip = 1; billNos.rs = 1; billNos.date = date;
     }
 
     if (ad) billNos.ad += 1
