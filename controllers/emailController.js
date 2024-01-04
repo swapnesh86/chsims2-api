@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler')
 const sendEmail = require("../utils/sendEmail");
 
 const createNewEmail = asyncHandler(async (req, res) => {
-    const { recipient, orderType, billno, customer, messagebody } = req.body
+    const { recipient, orderType, billno, customer, factor, messagebody } = req.body
 
     const subject = `Thank you for your purchase (${orderType}) with Bill No.: ${billno}`
     const style = `<head><style>
@@ -38,7 +38,7 @@ const createNewEmail = asyncHandler(async (req, res) => {
     let gst_total = 0
     let mrp_total = 0
     for (let i = 0; i < messagebody.length; i++) {
-        let cost = messagebody[i].mrp * messagebody[i].qty
+        let cost = messagebody[i].mrp * messagebody[i].qty * factor
         let gst_pct = messagebody[i].gst / 100
         let eff_gst = ((gst_pct * cost) / (1 + gst_pct)).toFixed(2)
         line = line + `<tr className="table__row bill--row" >
