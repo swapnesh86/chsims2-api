@@ -17,6 +17,10 @@ const SkuinvSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    CP: {
+        type: Number,
+        required: true
+    },
     HSNCode: {
         type: Number,
         required: true
