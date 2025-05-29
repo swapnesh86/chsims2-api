@@ -16,10 +16,10 @@ const getAllSkuinv = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewSkuinv = asyncHandler(async (req, res) => {
-    const { barcode, name, MRP, MBR, HSNCode } = req.body
+    const { barcode, name, MRP, MBR, CP, HSNCode } = req.body
 
     // Confirm Data
-    if (!barcode || !name || !MRP || !MBR || !HSNCode) {
+    if (!barcode || !name || !MRP || !MBR || !CP || !HSNCode) {
         return res.status(400).json({ message: 'Barcode, Name, MRP, MBR, HSNCode are all mandatory fields for a new entry' })
     }
 
@@ -30,7 +30,7 @@ const createNewSkuinv = asyncHandler(async (req, res) => {
     }
 
     // Create object
-    const skuinvObject = { barcode, name, MRP, MBR, HSNCode }
+    const skuinvObject = { barcode, name, MRP, MBR, CP, HSNCode }
 
     //Create and store new user
     const skuinv = await SkuinvList.create(skuinvObject)
@@ -47,18 +47,18 @@ const createNewSkuinv = asyncHandler(async (req, res) => {
 // @route PATCH /users
 // @access Private
 const updateSkuinv = asyncHandler(async (req, res) => {
-    const { id, name, MRP, MBR, HSNCode, source, cwefstore, andheri, bandra, powai, exhibition, sales } = req.body
+    const { id, name, MRP, MBR, CP, HSNCode, source, cwefstore, andheri, bandra, powai, exhibition, sales } = req.body
 
     // Confirm Data
     const tempArr = [source, cwefstore, andheri, bandra, powai, exhibition, sales]
     const count = tempArr.filter(Boolean).length
 
     // Confirm Data
-    const validskuupdate = (name && MRP && MBR && HSNCode && (count === 0))
+    const validskuupdate = (name && MRP && MBR && CP && HSNCode && (count === 0))
     const validinvupdate = (count === 2 && !validskuupdate)
 
     if (!validinvupdate && !validskuupdate) {
-        return res.status(400).json({ message: 'SKU update needs valid - name, mrp, mbr, hsncode, and no inventory fields. Inventory update should not have name, mrp, mbr, hsncode and should have exactly 1 source and 1 destination' })
+        return res.status(400).json({ message: 'SKU update needs valid - name, mrp, mbr, cp, hsncode, and no inventory fields. Inventory update should not have name, mrp, mbr, hsncode and should have exactly 1 source and 1 destination' })
     }
 
     const skuinv = await SkuinvList.findById(id).exec()
@@ -87,6 +87,7 @@ const updateSkuinv = asyncHandler(async (req, res) => {
         skuinv.name = name
         skuinv.MRP = MRP
         skuinv.MBR = MBR
+        skuinv.CP = CP
         skuinv.HSNCode = HSNCode
     }
 
