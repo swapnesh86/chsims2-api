@@ -22,13 +22,22 @@ const sendEmail = async (subject, message, send_to, sent_from, reply_to) => {
     };
 
     // Send Email
-    transporter.sendMail(options, function (err, info) {
-        if (err) {
-            console.log(err);
-        } else {
-            console.log(info);
-        }
-    });
+    try {
+        const info = await transporter.sendMail(options);
+        console.log("Email sent:", info.messageId);
+        return info; // Return info so the route can confirm success
+    } catch (err) {
+        console.error("Nodemailer Error:", err);
+        throw err; // Re-throw so the route handler catches the 500 error
+    }
+    
+    // transporter.sendMail(options, function (err, info) {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         console.log(info);
+    //     }
+    // });
 };
 
 module.exports = sendEmail;
