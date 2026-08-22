@@ -3,14 +3,23 @@ const asyncHandler = require('express-async-handler')
 
 const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-// @desc - Get all users, optionally filtered by exact billno
+// @desc - Get all users, optionally filtered by exact billno, or by a
+//         createdAt date range (defaults to the current month)
 // @route GET /users
 // @access Private
 const getAllLedger = asyncHandler(async (req, res) => {
-    const { billno } = req.query
-    const filter = billno
-        ? { billno: { $regex: `^${escapeRegex(billno)}$`, $options: 'i' } }
-        : {}
+    const { billno, startDate, endDate } = req.query
+
+    let filter
+    if (billno) {
+        filter = { billno: { $regex: `^${escapeRegex(billno)}$`, $options: 'i' } }
+    } else {
+        const now = new Date()
+        const rangeStart = startDate ? new Date(startDate) : new Date(now.getFullYear(), now.getMonth(), 1)
+        const rangeEnd = endDate ? new Date(endDate) : now
+        filter = { createdAt: { $gte: rangeStart, $lte: rangeEnd } }
+    }
+
     const ledger = await LedgerList.find(filter).lean()
     if (!ledger?.length) {
         return res.status(400).json({ message: 'No ledgers found' })
