@@ -6,6 +6,7 @@ const { logger, logEvents } = require('./middleware/logger')
 const errorHandler = require('./middleware/errorHandler')
 const cookieParser = require('cookie-parser')
 const cors = require('cors')
+const compression = require('compression')
 const corsOptions = require('./config/corsOptions')
 const connectDB = require('./config/dbConn')
 const mongoose = require('mongoose')
@@ -20,6 +21,8 @@ connectDB()
 app.use(logger)
 
 app.use(cors(corsOptions))     // Use 'allowedOrigins' to restrict what requests are valid
+
+app.use(compression())
 
 app.use(express.json())
 
