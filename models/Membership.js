@@ -3,11 +3,13 @@ const mongoose = require('mongoose')
 const MembershipSchema = new mongoose.Schema({
     barcode: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     phone: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     duration: {
         type: Number,

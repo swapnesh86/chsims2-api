@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const LedgerSchema = new mongoose.Schema({
     billno: {
         type: String,
-        required: true
+        required: true,
+        index: true
     },
     barcode: {
         type: String,
@@ -62,6 +63,8 @@ const LedgerSchema = new mongoose.Schema({
         timestamps: true
     }
 )
+
+LedgerSchema.index({ createdAt: 1 })
 
 
 module.exports = mongoose.model('LedgerList', LedgerSchema)

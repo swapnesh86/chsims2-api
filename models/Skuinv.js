@@ -3,7 +3,8 @@ const mongoose = require('mongoose')
 const SkuinvSchema = new mongoose.Schema({
     barcode: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     name: {
         type: String,
