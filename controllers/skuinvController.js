@@ -1,11 +1,19 @@
 const SkuinvList = require('../models/Skuinv')
 const asyncHandler = require('express-async-handler')
 
-// @desc - Get all users
+// @desc - Get all users, optionally limited to the N most recently added
+//         (by insertion order, via _id) when ?recent=N is passed
 // @route GET /users
 // @access Private
 const getAllSkuinv = asyncHandler(async (req, res) => {
-    const skuinv = await SkuinvList.find().lean()
+    const { recent } = req.query
+
+    let query = SkuinvList.find()
+    if (recent) {
+        query = query.sort({ _id: -1 }).limit(Number(recent))
+    }
+
+    const skuinv = await query.lean()
     if (!skuinv?.length) {
         return res.status(400).json({ message: 'No skuinvs found' })
     }
