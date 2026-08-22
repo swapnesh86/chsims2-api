@@ -1,0 +1,29 @@
+name: Deploy to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - uses: google-github-actions/setup-gcloud@v2
+
+      # Env vars (DATABASE_URI, ACCESS_TOKEN_SECRET, etc.) are not passed
+      # here - they're already set on the Cloud Run service from prior
+      # deploys and carry forward to new revisions automatically.
+      - run: |
+          gcloud run deploy chsims2-api-test \
+            --source . \
+            --region asia-south1 \
+            --project independent-bay-506310-t8 \
+            --allow-unauthenticated \
+            --quiet
