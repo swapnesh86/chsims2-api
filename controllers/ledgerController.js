@@ -31,14 +31,16 @@ const getAllLedger = asyncHandler(async (req, res) => {
 // @route POST /users
 // @access Private
 const createNewLedger = asyncHandler(async (req, res) => {
-    const { billno, barcode, name, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst } = req.body
+    const { billno, barcode, name, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst, createdAt } = req.body
     //Confirm Data
     if (!billno || !barcode || !name || !ordertype || !buyer || !seller || !paymenttype || !qty || !hsncode || !gst) {
         return res.status(400).json({ message: 'Billno, barcode, ordertype, buyer, seller, paymenttype, qty, hsncode, gst are all mandatory fields' })
     }
 
-    // Create object
+    // Create object - createdAt is optional and only overrides the default
+    // "now" timestamp when explicitly provided (e.g. a backdated bill)
     const ledgerObject = { billno, barcode, name, ordertype, buyer, seller, phone, email, paymenttype, membership, qty, totalprice, hsncode, gst }
+    if (createdAt) ledgerObject.createdAt = createdAt
 
     //Create and store new user
     const ledger = await LedgerList.create(ledgerObject)
