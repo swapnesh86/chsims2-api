@@ -48,37 +48,31 @@ const createNewBillNos = asyncHandler(async (req, res) => {
 const updateBillNos = asyncHandler(async (req, res) => {
     const { id, ad, ba, po, ex, dn, db, os, int, ip, rs, date } = req.body
 
-    const tempArr = [ad, ba, po, ex, dn, db, os, int, ip, rs]
-    const count = tempArr.filter(Boolean).length
+    const fields = { ad, ba, po, ex, dn, db, os, int, ip, rs }
+    const selected = Object.keys(fields).filter((key) => fields[key])
+
     // Confirm Data
-    if (count !== 1) {
+    if (selected.length !== 1) {
         return res.status(400).json({ message: 'One and only one location can have a non-zero value for an update request' })
     }
+    const field = selected[0]
 
-    const billNos = await BillNos.findById(id).exec()
+    // Atomic update - avoids the lost-update race of a findById -> mutate -> save
+    // round trip when two bill requests for the same location land close together.
+    let update
+    if (date) {
+        const reset = { ad: 1, ba: 1, po: 1, ex: 1, db: 1, dn: 1, os: 1, int: 1, ip: 1, rs: 1, date }
+        reset[field] = 2
+        update = { $set: reset }
+    } else {
+        update = { $inc: { [field]: 1 } }
+    }
 
-    if (!billNos) {
+    const updatedbillNos = await BillNos.findOneAndUpdate({ _id: id }, update, { new: true, runValidators: true })
+
+    if (!updatedbillNos) {
         return res.status(400).json({ message: 'Entry not found' })
     }
-
-    if (date) {
-        billNos.ad = 1; billNos.ba = 1; billNos.po = 1; billNos.ex = 1;
-        billNos.db = 1; billNos.dn = 1; billNos.os = 1; billNos.int = 1;
-        billNos.ip = 1; billNos.rs = 1; billNos.date = date;
-    }
-
-    if (ad) billNos.ad += 1
-    else if (ba) billNos.ba += 1
-    else if (po) billNos.po += 1
-    else if (ex) billNos.ex += 1
-    else if (db) billNos.db += 1
-    else if (dn) billNos.dn += 1
-    else if (os) billNos.os += 1
-    else if (int) billNos.int += 1
-    else if (ip) billNos.ip += 1
-    else if (rs) billNos.rs += 1
-
-    const updatedbillNos = await billNos.save()
 
     res.json({ message: `Current Bill nos: ${JSON.stringify(updatedbillNos)} ` })
 

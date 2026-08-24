@@ -69,37 +69,37 @@ const updateSkuinv = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'SKU update needs valid - name, mrp, mbr, cp, hsncode, and no inventory fields. Inventory update should not have name, mrp, mbr, hsncode and should have exactly 1 source and 1 destination' })
     }
 
-    const skuinv = await SkuinvList.findById(id).exec()
-
-    if (!skuinv) {
-        return res.status(400).json({ message: 'SkuInv entry not found' })
-    }
-
-    // I think this is not needed - since we will never want to update a barcode. 
+    // I think this is not needed - since we will never want to update a barcode.
     /* const duplicate = await SkuinvList.findOne({ barcode }).collation({ locale: 'en', strength: 2 }).lean().exec()
     //Allow updates to the original user
     if (duplicate && duplicate?._id.toString() !== id) {            // i.e. the duplicate username exists and the id is not the current id being operated on
         return res.status(409).json({ message: 'You seem to be changing barcode to a value that already has an entry in the database' })
     } */
 
+    // Atomic update - avoids the lost-update race of a findById -> mutate -> save
+    // round trip when two inventory/transfer requests for the same SKU land close together.
+    let update
     if (validinvupdate) {
-        skuinv.source += Number(source)
-        skuinv.cwefstore += Number(cwefstore)
-        skuinv.andheri += Number(andheri)
-        skuinv.bandra += Number(bandra)
-        skuinv.powai += Number(powai)
-        skuinv.exhibition += Number(exhibition)
-        skuinv.sales += Number(sales)
-    }
-    else if (validskuupdate) {
-        skuinv.name = name
-        skuinv.MRP = MRP
-        skuinv.MBR = MBR
-        skuinv.CP = CP
-        skuinv.HSNCode = HSNCode
+        update = {
+            $inc: {
+                source: Number(source) || 0,
+                cwefstore: Number(cwefstore) || 0,
+                andheri: Number(andheri) || 0,
+                bandra: Number(bandra) || 0,
+                powai: Number(powai) || 0,
+                exhibition: Number(exhibition) || 0,
+                sales: Number(sales) || 0,
+            }
+        }
+    } else {
+        update = { $set: { name, MRP, MBR, CP, HSNCode } }
     }
 
-    const updatedskuinv = await skuinv.save()
+    const updatedskuinv = await SkuinvList.findOneAndUpdate({ _id: id }, update, { new: true, runValidators: true })
+
+    if (!updatedskuinv) {
+        return res.status(400).json({ message: 'SkuInv entry not found' })
+    }
 
     res.json({ message: `Current Qty for: ${updatedskuinv.barcode} = CWEFStore: ${updatedskuinv.cwefstore}, AD: ${updatedskuinv.andheri}, BA: ${updatedskuinv.bandra}, PO: ${updatedskuinv.powai}, EX: ${updatedskuinv.exhibition} ` })
 
