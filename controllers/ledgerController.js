@@ -21,9 +21,6 @@ const getAllLedger = asyncHandler(async (req, res) => {
     }
 
     const ledger = await LedgerList.find(filter).lean()
-    if (!ledger?.length) {
-        return res.status(400).json({ message: 'No ledgers found' })
-    }
     res.json(ledger)
 })
 
