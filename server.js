@@ -8,7 +8,7 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const compression = require('compression')
 const corsOptions = require('./config/corsOptions')
-const connectDB = require('./config/dbConn')
+const { connectDB, requireDbReady } = require('./config/dbConn')
 const mongoose = require('mongoose')
 const PORT = process.env.PORT || 3500
 
@@ -33,6 +33,11 @@ app.use('/', express.static(path.join(__dirname, 'public')))
 
 //To handle the '/' route
 app.use('/', require('./routes/root'))
+
+// Everything past this point touches the DB - fail fast instead of hanging
+// on Mongoose's query buffering while a connection is still being (re)established.
+app.use(requireDbReady)
+
 app.use('/auth', require('./routes/authRoutes'))
 app.use('/users', require('./routes/userRoutes'))
 app.use('/ledger', require('./routes/ledgerRoutes'))
@@ -68,5 +73,5 @@ mongoose.connection.once('open', () => {
 
 mongoose.connection.on('error', err => {
     console.log(err)
-    logEvents(`${err.no}: ${err.code}\t${err.syscall}\t${err.hostname}`, 'mongoErrLog.log')
+    logEvents(`${err.name}: ${err.message}`, 'mongoErrLog.log')
 })
