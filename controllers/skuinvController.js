@@ -59,14 +59,17 @@ const updateSkuinv = asyncHandler(async (req, res) => {
 
     // Confirm Data
     const tempArr = [source, cwefstore, andheri, bandra, powai, exhibition, sales]
-    const count = tempArr.filter(Boolean).length
+    const nonZeroValues = tempArr.map(val => Number(val) || 0).filter(val => val !== 0)
+    const count = nonZeroValues.length
 
     // Confirm Data
     const validskuupdate = (name && MRP && MBR && CP && HSNCode && (count === 0))
-    const validinvupdate = (count === 2 && !validskuupdate)
+    // An inventory update must move stock from one location to another, not create/destroy it -
+    // the two non-zero fields must be equal and opposite (sum to 0).
+    const validinvupdate = (count === 2 && !validskuupdate && (nonZeroValues[0] + nonZeroValues[1] === 0))
 
     if (!validinvupdate && !validskuupdate) {
-        return res.status(400).json({ message: 'SKU update needs valid - name, mrp, mbr, cp, hsncode, and no inventory fields. Inventory update should not have name, mrp, mbr, hsncode and should have exactly 1 source and 1 destination' })
+        return res.status(400).json({ message: 'SKU update needs valid - name, mrp, mbr, cp, hsncode, and no inventory fields. Inventory update should not have name, mrp, mbr, hsncode and should have exactly 1 source and 1 destination location whose quantities are equal and opposite' })
     }
 
     // I think this is not needed - since we will never want to update a barcode.
