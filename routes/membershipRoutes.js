@@ -6,19 +6,12 @@ const verifyRoles = require('../middleware/verifyRoles')
 const ROLES_LIST = require('../config/roles_list')
 
 router.use(verifyJWT)
-router.use(verifyRoles(
-    ROLES_LIST.Admin,
-    ROLES_LIST.ShopManager,
-    ROLES_LIST.AdInCharge,
-    ROLES_LIST.PoInCharge,
-    ROLES_LIST.BaInCharge
-))
 
 router.route('/')
     .get(membershipController.getAllMembership)
-    .post(membershipController.createNewMembership)
-    .patch(membershipController.updateMembership)
-    .delete(membershipController.deleteMembership)
+    .post(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.ShopManager, ROLES_LIST.AdInCharge, ROLES_LIST.PoInCharge, ROLES_LIST.BaInCharge), membershipController.createNewMembership)
+    .patch(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.ShopManager, ROLES_LIST.AdInCharge, ROLES_LIST.PoInCharge, ROLES_LIST.BaInCharge), membershipController.updateMembership)
+    .delete(verifyRoles(ROLES_LIST.Admin, ROLES_LIST.ShopManager, ROLES_LIST.AdInCharge, ROLES_LIST.PoInCharge, ROLES_LIST.BaInCharge), membershipController.deleteMembership)
 
 
 module.exports = router

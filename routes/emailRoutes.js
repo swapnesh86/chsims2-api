@@ -11,7 +11,8 @@ router.use(verifyRoles(
     ROLES_LIST.ShopManager,
     ROLES_LIST.AdInCharge,
     ROLES_LIST.PoInCharge,
-    ROLES_LIST.BaInCharge
+    ROLES_LIST.BaInCharge,
+    ROLES_LIST.InventoryManager
 ))
 
 router.route('/')
